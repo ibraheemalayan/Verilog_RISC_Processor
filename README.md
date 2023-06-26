@@ -1,14 +1,16 @@
-                                    ╔════════════════━━──── • ────━━━═══════════════╗
+                    ╔════════════════━━──── • ────━━━═══════════════╗
 
-                                                Simple RISC Verilog Processor
+                                Simple RISC Verilog Processor
 
-                                    ╚═══════════════━━━──── • ────━━━═══════════════╝
+                    ╚═══════════════━━━──── • ────━━━═══════════════╝
 
 ---
 
 # Simple RISC Verilog Processor 💻
 
 Second project in the computer architicture course (ENCS4370) at [Birzeit University](https://www.birzeit.edu/)
+
+A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 ## Partners
 
@@ -20,14 +22,17 @@ Second project in the computer architicture course (ENCS4370) at [Birzeit Univer
 
 ---
 
-## [Project Paper](./Project_Paper.pdf)
+## [Project Paper ( Requirements )](./Project_Paper.pdf)
 
 ---
 
 ## Modules
 
-- [RegisterFile.v](./modules/RegisterFile.v)
+- [REGISTER_FILE.v](./modules/REGISTER_FILE.v)
   a 32 bit register file with 32 registers
+
+- [MEM.v](./modules/MEM.v)
+  a XXX bit memory with XXX words # TODO
 
 - [ALU.v](./modules/ALU.v)
   an Arithmetic Logic Unit that can execute 3 operations on 32 bit operands
