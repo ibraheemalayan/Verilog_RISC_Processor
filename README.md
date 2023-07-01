@@ -28,7 +28,7 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 ## Naming Convention
 
-- `sig_{snack_case_name}` for signals
+- `{sig/flag}_{snack_case_name}` for signals/flags
 - `{snack_case_name}` for internal components ( registers / wires )
 - `{camel_case_name}` for modules
 - `{pascal_case_name}` for input/output ports ( excluding signals )
@@ -63,3 +63,14 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 - waveform
   ![data memory waveform](./assets/data_memory_waveform.png)
+
+### ALU
+
+- [alu.v](./processor_modules/RiscProcessor/processor/src/alu/alu.v)
+  a 32 bit ALU with 5 operations ( ADD, SUB, AND, SL, SR ) and 2 flags ( zero, negative )
+
+- [alu_tb.v](./processor_modules/RiscProcessor/processor/src/alu/alu_testbench.v)
+  a test bench for the ALU module that tests all operations and the flags
+
+- waveform
+  ![alu waveform](./assets/alu_tb_waveform.png)
