@@ -35,6 +35,15 @@ parameter
     SLLV = 5'b00010, // Reg(Rd) = Reg(Rs1) << Reg(Rs2)
     SLRV = 5'b00011, // Reg(Rd) = Reg(Rs1) >> Reg(Rs2)
 
+// ALU function code signal
+// 2-bit chip-select for ALU
+
+    ALU_Add = 3'b000, // used in ADD, ADDI, LW, SW, JAL
+    ALU_Sub = 3'b001, // used in SUB, CMP, BEQ
+    ALU_And = 3'b010, // used in AND, ANDI
+    ALU_SLL = 3'b011, // used in SLL, SLLV
+    ALU_SLR = 3'b100, // used in SLR, SLRV
+
 // 32 registers
     R0 = 5'd0, // zero register
     R1 = 5'd1, // general purpose register
