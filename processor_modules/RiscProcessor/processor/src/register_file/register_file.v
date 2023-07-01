@@ -1,7 +1,7 @@
 // register file ( array of 32 bit 32 registers )
 module registerFile(clock, RA, RB, RW, sig_enable_write, BusW, BusA, BusB);
     
-    // ----------------- INPUTS -----------------
+    // ----------------- PORTS -----------------
 
 	// clock
 	input wire clock;
@@ -22,8 +22,8 @@ module registerFile(clock, RA, RB, RW, sig_enable_write, BusW, BusA, BusB);
 
 	reg [31:0] registers_array [0:31];
     
-	// read registers at positive edge of clock
-	always @ (posedge clock) begin
+	// read registers always
+	always @(*) begin
 		if (sig_enable_write==0) begin
 			BusA <= registers_array[RA];
 			BusB <= registers_array[RB];
