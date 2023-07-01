@@ -20,3 +20,7 @@ processor_modules/RiscProcessor/processor/projlib.cfg
 processor_modules/RiscProcessor/processor/compile/contents.lib~processor
 processor_modules/RiscProcessor/processor/log/console.log
 processor_modules/RiscProcessor/processor/processor/processor.lib
+processor_modules/RiscProcessor/RiscProcessor.wsw
+processor_modules/RiscProcessor/processor/synthesis.order
+processor_modules/RiscProcessor/processor/src/wave.asdb
+processor_modules/RiscProcessor/processor/src/wave.asdbw/
