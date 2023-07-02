@@ -23,7 +23,7 @@ module registerFile(clock, RA, RB, RW, sig_enable_write, BusW, BusA, BusB);
 	reg [31:0] registers_array [0:31];
     
 	// read registers always
-	always @(*) begin
+	always @(posedge clock) begin
 		if (sig_enable_write==0) begin
 			BusA <= registers_array[RA];
 			BusB <= registers_array[RB];

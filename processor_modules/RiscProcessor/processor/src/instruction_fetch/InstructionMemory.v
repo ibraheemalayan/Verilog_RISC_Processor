@@ -38,7 +38,7 @@ module instructionMemory(clock, AddressBus, InstructionReg);
     // ----------------- LOGIC -----------------
 
     // read instruction at positive edge of clock
-    always  @(*) begin
+    always  @(posedge clock) begin
         InstructionReg <= instruction_memory[AddressBus];
     end
 

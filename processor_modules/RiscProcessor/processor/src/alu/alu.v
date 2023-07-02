@@ -1,6 +1,9 @@
-module ALU(A, B, Output, flag_zero, flag_negative, sig_alu_op);
-	
+module ALU(clock, A, B, Output, flag_zero, flag_negative, sig_alu_op);
+
 	// ----------------- SIGNALS & INPUTS -----------------
+
+	// clock
+    input wire clock;
 
     // chip select for ALU operation
 	input wire [2:0] sig_alu_op;
@@ -19,7 +22,7 @@ module ALU(A, B, Output, flag_zero, flag_negative, sig_alu_op);
 	assign flag_zero = (0 == Output);
 	assign flag_negative = (Output[31] == 1); // if 2s complement number is negative, MSB is 1
 
-	always @(*) begin
+	always @(posedge clock) begin
 		case (sig_alu_op)
 			ALU_Add:  Output <= A + B;
 			ALU_Sub:  Output <= A - B;
