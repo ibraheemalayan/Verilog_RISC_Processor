@@ -1,6 +1,11 @@
 
 parameter
 
+// levels
+    LOW = 1'b0,
+    HIGH = 1'b1,
+
+
 // instruction types
 // 2-bit instruction type (00: R-Type, 01: J-Type, 10: I-type, 11: S-type)
  

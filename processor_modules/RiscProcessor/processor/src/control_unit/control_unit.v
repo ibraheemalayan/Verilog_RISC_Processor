@@ -22,6 +22,7 @@ module controlUnit(
     // inputs
     InstructionType,
     FunctionCode,
+    StopBit,
     flag_zero,
     
     );
@@ -39,6 +40,9 @@ module controlUnit(
 
     // zero flag
     input wire flag_zero;
+
+    // Stop bit
+    input wire StopBit;
 
     // ----------------- OUTPUTS -----------------
     
@@ -63,9 +67,6 @@ module controlUnit(
 
     // ----------------- INTERNALS -----------------
 
-    `define HIGH 1'b1
-    `define LOW 1'b0
-
     // binary codes for stages
     `define STG_FTCH 3'b000
     `define STG_DCDE 3'b001
@@ -73,8 +74,8 @@ module controlUnit(
     `define STG_MEM 3'b011
     `define STG_WRB 3'b100
 
-    reg [2:0] current_stage = STG_FTCH;
-    reg [2:0] next_stage = STG_DCDE;
+    reg [2:0] current_stage = `STG_FTCH;
+    reg [2:0] next_stage = `STG_DCDE;
 
     // ----------------- LOGIC -----------------
 
@@ -84,91 +85,178 @@ module controlUnit(
 
         case (current_stage)
 
-            `STG_EXEC: begin 
-                
+            `STG_FTCH: begin 
                 // disable previous stage
-                en_instruction_decode <= LOW;
+                en_instruction_decode = LOW;
+                en_execute = LOW;
+
+                // disable signals
+                sig_rf_enable_write = LOW;
+                sig_enable_data_memory_write = LOW;
+                sig_enable_data_memory_read = LOW; 
 
                 // enable current stage
-                en_execute <= HIGH;
+                en_instruction_fetch <= HIGH; // fetch after finding PC src
 
                 // next stage
-                next_stage <= ? STG_MEM : STG_WRB;
-                if (FunctionCode inside {LW, SW, JAL}) begin 
+                next_stage <= `STG_DCDE;
 
-                    next_stage <= STG_MEM;
+                // ---------------------------------------------
+                // ------------ set control signals ------------
+                // ---------------------------------------------
 
-                end else if (FunctionCode inside {BEQ, CMP}) begin
+                // ---- PC Source ----
 
-                    next_stage <= STG_FTCH;
+                // here the inputs are the ones from the previous stage
+                if (StopBit == HIGH) begin
+
+                    sig_pc_src = PC_Src_Ra; // use return address as PC
+
+                end else if (InstructionType == J_Type) begin
+
+                    sig_pc_src = PC_Src_Jmp; // use JTA as PC
+
+                end else if (InstructionType == I_Type && FunctionCode == BEQ  && flag_zero == HIGH) begin
+
+                    sig_pc_src = PC_Src_BTA; // use BTA as PC if taken branch
 
                 end else begin
 
-                    next_stage <= STG_WRB;
+                    sig_pc_src = PC_Src_Dft; // use next instruction address as PC
+
+                end
+            
+            end
+
+            `STG_DCDE: begin 
+                // disable previous stage
+                en_instruction_fetch = LOW;
+
+                // enable current stage
+                en_instruction_decode = HIGH;
+                
+                 // next stage
+                next_stage <= (InstructionType == J_Type && FunctionCode == J) ? `STG_FTCH : `STG_EXEC;
+
+                // ---------------------------------------------
+                // ------------ set control signals ------------
+                // ---------------------------------------------
+
+                // ---- RB Source ----
+
+                sig_rb_src = (InstructionType == I_Type) ? HIGH : LOW;
+
+            
+            end
+
+            `STG_EXEC: begin 
+                
+                // disable previous stage
+                en_instruction_decode = LOW;
+
+                // enable current stage
+                en_execute = HIGH;
+
+                // next stage
+                if  ( 
+                    ( InstructionType == J_Type && FunctionCode == JAL ) || 
+                    ( InstructionType == I_Type && FunctionCode inside {LW, SW} ) ) begin 
+
+                    next_stage <= `STG_MEM;
+
+                end else if ( 
+                    ( InstructionType == I_Type && FunctionCode == BEQ ) || 
+                    ( InstructionType == R_Type && FunctionCode == CMP ) ) begin 
+
+                    next_stage <= `STG_FTCH;
+
+                end else begin
+
+                    next_stage <= `STG_WRB;
 
                 end
 
-                // set control signals
+                // ---------------------------------------------
+                // ------------ set control signals ------------
+                // ---------------------------------------------
 
                 // ---- ALU Source ----
                 
                 if (InstructionType == S_Type && FunctionCode inside {SLL, SLR} ) begin
 
                     // shift left or right by immediate in SA
-                    sig_alu_src <= ALU_Src_SAi; // use extended SA as operand
+                    sig_alu_src = ALU_Src_SAi; // use extended SA as operand
                 
                 end else if (InstructionType == S_Type || InstructionType == R_Type) begin
 
                     // R-Type or S-Type that uses register for shift amount
-                    sig_alu_src <= ALU_Src_Reg; // use Rb as operand
+                    sig_alu_src = ALU_Src_Reg; // use Rb as operand
 
                 end else if (InstructionType == I_Type && FunctionCode == ANDI) begin
 
                     // ANDI instruction uses unsigned immediate
-                    sig_alu_src <= ALU_Src_UIm; // use unsigned immediate as operand
+                    sig_alu_src = ALU_Src_UIm; // use unsigned immediate as operand
 
                 end else if (InstructionType == I_Type) begin
 
                     // I_Type instruction other than ANDI uses signed immediate
-                    sig_alu_src <= ALU_Src_SIm; // use signed immediate as operand
+                    sig_alu_src = ALU_Src_SIm; // use signed immediate as operand
 
                 end
 
                 // ---- ALU Operation ----
 
-                if (FunctionCode inside {SLL, SLLV}) begin
+                if (InstructionType == S_Type && FunctionCode inside {SLL, SLLV}) begin
 
-                    sig_alu_op <= ALU_SLL; // shift left
+                    sig_alu_op = ALU_SLL; // shift left
 
-                end else if (FunctionCode inside {SLR, SLRV}) begin
+                end else if (InstructionType == S_Type && FunctionCode inside {SLR, SLRV}) begin
 
-                    sig_alu_op <= ALU_SLR; // shift right
+                    sig_alu_op = ALU_SLR; // shift right
 
-                end else if (FunctionCode inside {ANDI, AND}) begin
+                end else if ( 
+                    ( InstructionType == I_Type && FunctionCode == ANDI ) || 
+                    ( InstructionType == R_Type && FunctionCode == AND ) ) begin 
 
-                    sig_alu_op <= ALU_And; // bitwise AND
+                    sig_alu_op = ALU_And; // bitwise AND
 
-                end else if (FunctionCode inside {SUB, CMP, BEQ}) begin
-
-                    sig_alu_op <= ALU_Sub; // subtract
+                end else if ( 
+                    ( InstructionType == I_Type && FunctionCode == BEQ ) || 
+                    ( InstructionType == R_Type && FunctionCode inside {SUB, CMP} ) ) begin
+                    
+                    sig_alu_op = ALU_Sub; // subtract
 
                 end else begin
 
-                    sig_alu_op <= ALU_Add; // add
+                    sig_alu_op = ALU_Add; // add
 
                 end
 
-                
-
-
             end
 
+            `STG_MEM: begin 
+                // disable previous stage
+                en_execute = LOW;
+                
+                 // next stage
+                next_stage <= (InstructionType == I_Type && FunctionCode == LW) ? `STG_WRB : `STG_FTCH;
 
+                // ---------------------------------------------
+                // ------------ set control signals ------------
+                // ---------------------------------------------
 
+                // ---- Memory Write ----
+
+                sig_enable_data_memory_write = (InstructionType == I_Type && FunctionCode == SW) ? HIGH : LOW;
+
+                // ---- Memory Read ----
+
+                sig_enable_data_memory_read = (InstructionType == I_Type && FunctionCode == LW) ? HIGH : LOW;
+
+            
+            end
 
         endcase
-
-        sig_rb_src <= current_stage == `STG_EXEC && ? 1'b1 : 1'b0;
 
     end
 
