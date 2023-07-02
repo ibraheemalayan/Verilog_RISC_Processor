@@ -1,4 +1,4 @@
-// stores program instructions
+// stores program instructions ( used 32 bit cells )
 
 // instruction formts:
 

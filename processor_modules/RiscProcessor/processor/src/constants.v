@@ -44,6 +44,22 @@ parameter
     ALU_SLL = 3'b011, // used in SLL, SLLV
     ALU_SLR = 3'b100, // used in SLR, SLRV
 
+// PC source signal
+// 2-bit source select for next PC value
+
+    PC_Src_Dft = 2'b00, // PC = PC + 4
+    PC_Src_Ra  = 2'b01, // return address from stack
+    PC_Src_Jmp = 2'b10, // jump address
+    PC_Src_BTA = 2'b11, // branch target address
+
+// ALU source signal
+// 2-bit source select for next PC value
+
+    ALU_Src_SIm = 2'b00, // If S-Type instruction && Function is SLL || SLR, SA_5 is used as operand2
+    ALU_Src_UIm = 2'b01, // Else If S-Type || R-Type instruction, RB is used as operand2
+    ALU_Src_SAi = 2'b10, // Else If I-Type instruction && !ANDI, Signed Immediate14 is used as operand2
+    ALU_Src_Reg = 2'b11, // Else If I-Type instruction && Unsigned Immediate14 is used as operand2
+
 // 32 registers
     R0 = 5'd0, // zero register
     R1 = 5'd1, // general purpose register
