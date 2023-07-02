@@ -22,9 +22,13 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 ---
 
-## [Project Paper ( Requirements )](./Project_Paper.pdf)
+## [Project ( Requirements )](./Project_Paper.pdf)
 
 ---
+
+## Data Path
+
+![datapath block diagram](./assets/data_path.png)
 
 ## Naming Convention
 
@@ -74,3 +78,14 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 - waveform
   ![alu waveform](./assets/alu_tb_waveform.png)
+
+### PC Module
+
+- [pc_module.v](./processor_modules/RiscProcessor/processor/src/instruction_fetch/pc_module.v)
+  a 32 bit program counter logic module that handles Jump/Conditional Branches/Increment/Return
+
+- [pc_module_tb.v](./processor_modules/RiscProcessor/processor/src/instruction_fetch/pc_module_testbench.v)
+  a test bench for the PC module that tests all operations
+
+- waveform
+  ![pc module waveform](./assets/pc_module_tb_waveform.png)
