@@ -252,8 +252,27 @@ module controlUnit(
                 // ---- Memory Read ----
 
                 sig_enable_data_memory_read = (InstructionType == I_Type && FunctionCode == LW) ? HIGH : LOW;
-
             
+            end
+
+            `STG_WRB: begin 
+                // disable previous stage
+                sig_enable_data_memory_write = LOW;
+                sig_enable_data_memory_read = LOW;
+                
+                 // next stage
+                next_stage <= `STG_FTCH;
+
+                // ---------------------------------------------
+                // ------------ set control signals ------------
+                // ---------------------------------------------
+                
+                // register file write enable
+                sig_rf_enable_write = HIGH;
+
+                // write back data source
+                sig_write_back_data_select = (InstructionType == I_Type && FunctionCode == LW) ? HIGH : LOW;
+
             end
 
         endcase
