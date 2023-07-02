@@ -55,10 +55,10 @@ parameter
 // ALU source signal
 // 2-bit source select for next PC value
 
-    ALU_Src_SIm = 2'b00, // If S-Type instruction && Function is SLL || SLR, SA_5 is used as operand2
-    ALU_Src_UIm = 2'b01, // Else If S-Type || R-Type instruction, RB is used as operand2
-    ALU_Src_SAi = 2'b10, // Else If I-Type instruction && !ANDI, Signed Immediate14 is used as operand2
-    ALU_Src_Reg = 2'b11, // Else If I-Type instruction && Unsigned Immediate14 is used as operand2
+    ALU_Src_SAi = 2'b10, // If S-Type instruction && Function is (SLL || SLR), SA_5 is used as operand2
+    ALU_Src_Reg = 2'b11, // Else If S-Type || R-Type instruction, RB is used as operand2
+    ALU_Src_SIm = 2'b00, // Else If I-Type instruction && !ANDI, Signed Immediate14 is used as operand2
+    ALU_Src_UIm = 2'b01, // Else If I-Type instruction && Unsigned Immediate14 is used as operand2
 
 // 32 registers
     R0 = 5'd0, // zero register
