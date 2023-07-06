@@ -89,3 +89,14 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 - waveform
   ![pc module waveform](./assets/pc_module_tb_waveform.png)
+
+### Stack Module ( LIFO Memory )
+
+- [stack.v](./processor_modules/RiscProcessor/processor/src/stack/stack.v)
+  a 32 bit stack module that handles push/pop operations on Last-In-First-Out memory and has a 32 word capacity
+
+- [stack_testbench.v](./processor_modules/RiscProcessor/processor/src/stack/stack_testbench.v)
+  a test bench for the stack module that tests all operations
+
+- waveform
+  ![stack waveform](./assets/stack_testbench.png)
