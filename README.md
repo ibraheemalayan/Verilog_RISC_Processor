@@ -100,3 +100,16 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 - waveform
   ![stack waveform](./assets/stack_testbench.png)
+
+## Control Unit ( FSM )
+
+- [control_unit.v](./processor_modules/RiscProcessor/processor/src/control_unit/control_unit.v)
+  a control unit that handles the control signals for the processor
+
+- [control_unit_tb.v](./processor_modules/RiscProcessor/processor/src/control_unit/control_unit_testbench.v)
+  a test bench for the control unit that tests all operations
+
+- R/I Type Arithmatic/Logical Operations Waveform
+  ![control unit waveform](./assets/control_unit/arithmatic_logical_waveform.png)
+- Jump/Branch Operations Waveform
+  ![control unit waveform](./assets/control_unit/jump_branch_waveform.png)
