@@ -23,7 +23,7 @@ module controlUnit(
     InstructionType,
     FunctionCode,
     StopBit,
-    flag_zero,
+    flag_zero
     
     );
 
@@ -48,22 +48,22 @@ module controlUnit(
     
     // Mux signals
     output reg [2:0] sig_alu_op;
-    output reg [1:0] sig_pc_src;
+    output reg [1:0] sig_pc_src = PC_Src_Dft;
     output reg [1:0] sig_alu_src;
     
     output reg sig_write_back_data_select,
                 sig_rb_src;
 
     // operation enable signals
-    output reg sig_rf_enable_write,
-                sig_enable_data_memory_write,
-                sig_enable_data_memory_read;
+    output reg sig_rf_enable_write = LOW,
+                sig_enable_data_memory_write = LOW,
+                sig_enable_data_memory_read = LOW;
 
     
     // stage enable signals ( used as clock for each stage )
-    output reg en_execute,
-                en_instruction_fetch,
-                en_instruction_decode;
+    output reg en_execute = LOW,
+                en_instruction_fetch = HIGH,
+                en_instruction_decode = LOW;
 
     // ----------------- INTERNALS -----------------
 
@@ -80,6 +80,16 @@ module controlUnit(
     // ----------------- LOGIC -----------------
 
     // ! // TODO write psuedo code 
+
+    initial begin
+
+    end
+
+    always@(posedge clock) begin // maybe use negative edge
+
+        current_stage = next_stage;
+
+    end
 
     always@(posedge clock) begin // maybe use negative edge
 
@@ -256,9 +266,10 @@ module controlUnit(
             end
 
             `STG_WRB: begin 
-                // disable previous stage
+                // disable previous stages
                 sig_enable_data_memory_write = LOW;
                 sig_enable_data_memory_read = LOW;
+                en_execute = LOW;                
                 
                  // next stage
                 next_stage <= `STG_FTCH;

@@ -50,7 +50,7 @@ module dataMemoryTestBench ();
         #10
         $display("(%0t) > DataMemoryOutputBus=%0d", $time, DataMemoryOutputBus);
 
-        #10 $finish;    // 100 cycle
+        #10 $finish;  
     end
 
 endmodule
