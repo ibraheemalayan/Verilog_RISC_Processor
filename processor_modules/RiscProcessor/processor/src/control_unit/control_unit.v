@@ -157,6 +157,30 @@ module controlUnit(
 
                 sig_rb_src = (InstructionType == I_Type) ? HIGH : LOW;
 
+                // ---- ALU Source ----
+                
+                if (InstructionType == S_Type && FunctionCode inside {SLL, SLR} ) begin
+
+                    // shift left or right by immediate in SA
+                    sig_alu_src = ALU_Src_SAi; // use extended SA as operand
+                
+                end else if (InstructionType == S_Type || InstructionType == R_Type) begin
+
+                    // R-Type or S-Type that uses register for shift amount
+                    sig_alu_src = ALU_Src_Reg; // use Rb as operand
+
+                end else if (InstructionType == I_Type && FunctionCode == ANDI) begin
+
+                    // ANDI instruction uses unsigned immediate
+                    sig_alu_src = ALU_Src_UIm; // use unsigned immediate as operand
+
+                end else if (InstructionType == I_Type) begin
+
+                    // I_Type instruction other than ANDI uses signed immediate
+                    sig_alu_src = ALU_Src_SIm; // use signed immediate as operand
+
+                end
+
             
             end
 
@@ -190,30 +214,6 @@ module controlUnit(
                 // ---------------------------------------------
                 // ------------ set control signals ------------
                 // ---------------------------------------------
-
-                // ---- ALU Source ----
-                
-                if (InstructionType == S_Type && FunctionCode inside {SLL, SLR} ) begin
-
-                    // shift left or right by immediate in SA
-                    sig_alu_src = ALU_Src_SAi; // use extended SA as operand
-                
-                end else if (InstructionType == S_Type || InstructionType == R_Type) begin
-
-                    // R-Type or S-Type that uses register for shift amount
-                    sig_alu_src = ALU_Src_Reg; // use Rb as operand
-
-                end else if (InstructionType == I_Type && FunctionCode == ANDI) begin
-
-                    // ANDI instruction uses unsigned immediate
-                    sig_alu_src = ALU_Src_UIm; // use unsigned immediate as operand
-
-                end else if (InstructionType == I_Type) begin
-
-                    // I_Type instruction other than ANDI uses signed immediate
-                    sig_alu_src = ALU_Src_SIm; // use signed immediate as operand
-
-                end
 
                 // ---- ALU Operation ----
 

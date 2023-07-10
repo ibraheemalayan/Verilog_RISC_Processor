@@ -24,17 +24,11 @@ module registerFile(clock, RA, RB, RW, sig_enable_write, BusW, BusA, BusB);
     
 	// read registers always
 	always @(posedge clock) begin
-		if (sig_enable_write==0) begin
-			BusA <= registers_array[RA];
-			BusB <= registers_array[RB];
-		end
 		
-	end
+		BusA <= registers_array[RA];
+		BusB <= registers_array[RB];
 
-	// write register at negative edge of clock
-	always @ (posedge clock) begin
-		if (
-                
+		if ( 
                 (RW != 0) // write register is not R0
                 && 
                 (sig_enable_write==1) // write enabled
@@ -42,10 +36,18 @@ module registerFile(clock, RA, RB, RW, sig_enable_write, BusW, BusA, BusB);
         ) begin
 			registers_array[RW] <= BusW;
 		end
+		
 	end
 
 	initial begin
 		registers_array[0] <= 32'h00000000;
+		registers_array[1] <= 32'h00000000;
+		registers_array[2] <= 32'h00000000;
+		registers_array[3] <= 32'h00000000;
+		registers_array[4] <= 32'h00000000;
+		registers_array[5] <= 32'h00000000;
+		registers_array[6] <= 32'h00000000;		
+		registers_array[7] <= 32'h00000000;		
 		registers_array[8] <= 32'h00000000;
 		registers_array[9] <= 32'h00000000;
 		registers_array[10] <= 32'h00000000;
