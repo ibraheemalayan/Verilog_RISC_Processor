@@ -61,11 +61,14 @@ module instructionMemory(clock, AddressBus, InstructionReg);
         // R3 = R1 + R2
         instruction_memory[3] = { ADD, R1, R3, R2, 9'd0, R_Type, 1'b0 };
 
+        // R3 = R3 + R3
+        instruction_memory[4] = { ADD, R3, R3, R3, 9'd0, R_Type, 1'b0 };
+
         // Jump -4; jump to instruction_memory[3]
-        instruction_memory[4] = { J, -24'sd4, J_Type, 1'b0 };
+        instruction_memory[5] = { J, -24'sd4, J_Type, 1'b0 };
 
         // SUB R3, R1, R2; subtract R1 and R2 and store in R3
-        instruction_memory[5] = { SUB, R1, R3, R2, 9'd0, R_Type, 1'b0 };
+        instruction_memory[6] = { SUB, R1, R3, R2, 9'd0, R_Type, 1'b0 };
 
         
 
