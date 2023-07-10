@@ -113,3 +113,18 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
   ![control unit waveform](./assets/control_unit/arithmatic_logical_waveform.png)
 - Jump/Branch Operations Waveform
   ![control unit waveform](./assets/control_unit/jump_branch_waveform.png)
+
+## Addition Loop Program
+
+- code:
+
+  ```assembly
+  ADDI R1, R0, 2
+  ADDI R2, R0, 3
+  ADD R3, R2, R1
+  ADD R3, R3, R3
+  J -4 ; jumps to previous ADD
+  ```
+
+- waveform
+  ![addition loop waveform](./assets/programs/addition_loop.png)
