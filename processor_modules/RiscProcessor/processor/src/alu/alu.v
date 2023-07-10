@@ -23,6 +23,7 @@ module ALU(clock, A, B, Output, flag_zero, flag_negative, sig_alu_op);
 	assign flag_negative = (Output[31] == 1); // if 2s complement number is negative, MSB is 1
 
 	always @(posedge clock) begin
+		#1 // to wait for ALU source mux to select operands
 		case (sig_alu_op)
 			ALU_Add:  Output <= A + B;
 			ALU_Sub:  Output <= A - B;

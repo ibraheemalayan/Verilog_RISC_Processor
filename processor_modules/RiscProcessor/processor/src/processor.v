@@ -116,15 +116,25 @@ module riscProcessor();
 
     assign ALU_A = BusA;
 
-    always @(en_instruction_decode) begin
+    always @(posedge en_execute) begin
         case (sig_alu_src)
-            ALU_Src_SAi: ALU_B = Sign_Extended_SA;
-            ALU_Src_Reg: ALU_B = BusB;
-            ALU_Src_SIm: ALU_B = Sign_Extended_I_TypeImmediate;
-            ALU_Src_UIm: ALU_B = Unsigned_Extended_I_TypeImmediate;
+            ALU_Src_SAi: ALU_B <= Sign_Extended_SA;
+            ALU_Src_Reg: ALU_B <= BusB;
+            ALU_Src_SIm: ALU_B <= Sign_Extended_I_TypeImmediate;
+            ALU_Src_UIm: ALU_B <= Unsigned_Extended_I_TypeImmediate;
         endcase    
     end
-    
+
+    // ----------------- Data Memory -----------------
+
+    // data memory wires/registers/signals
+    wire [31:0] DataMemoryAddressBus;
+    wire [31:0] DataMemoryInputBus;
+
+    wire [31:0] DataMemoryOutputBus;
+
+    assign DataMemoryAddressBus = ALU_Output;
+    assign DataMemoryInputBus = BusB;
 
     // -----------------------------------------------------------------
     // ----------------------------- CLOCK -----------------------------
@@ -184,13 +194,25 @@ module riscProcessor();
 
     // register file ( array of 32 registers )
     // use en_instruction_decode as clock for register file
-    registerFile register_file(en_instruction_decode, RA, RB, RW, sig_enable_write, BusW, BusA, BusB);
+    registerFile register_file(en_instruction_decode, RA, RB, RW, sig_rf_enable_write, BusW, BusA, BusB);
 
     // -----------------------------------------------------------------
     // ----------------- ALU -----------------
     // -----------------------------------------------------------------
 
     ALU alu(en_execute, ALU_A, ALU_B, ALU_Output, flag_zero, flag_negative, sig_alu_op);
+
+    // -----------------------------------------------------------------
+    // ----------------- Data Memory -----------------
+    // -----------------------------------------------------------------
+
+    dataMemory data_memory(clock, DataMemoryAddressBus, DataMemoryInputBus, DataMemoryOutputBus, sig_enable_data_memory_write, sig_enable_data_memory_read);
+	
+    // -----------------------------------------------------------------
+    // ----------------- Write Back -----------------
+    // -----------------------------------------------------------------
+
+    assign BusW = (sig_write_back_data_select == 0) ? ALU_Output : DataMemoryOutputBus;
 
 
 endmodule
