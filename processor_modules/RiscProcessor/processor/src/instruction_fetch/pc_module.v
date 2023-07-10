@@ -54,19 +54,19 @@ module pcModule(clock, PC, I_TypeImmediate, J_TypeImmediate, ReturnAddress, sig_
         case (sig_pc_src)
             PC_Src_Dft: begin
                 // default      : PC = PC + 4
-                PC <= pc_plus_4;      
+                PC = pc_plus_4;      
             end  
             PC_Src_Ra:  begin
                 // return       : PC = Return Address
-                PC <= ReturnAddress;  
+                PC = ReturnAddress;  
             end  
             PC_Src_BTA: begin
                 // Taken Branch : PC = PC + J_TypeImmediate
-                PC <= brach_target_address;
+                PC = brach_target_address;
             end  
             PC_Src_Jmp: begin
                 // Jump         : PC = PC + I_TypeImmediate
-                PC <= jump_target_address;
+                PC = jump_target_address;
             end  
         endcase
 	end

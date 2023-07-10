@@ -62,7 +62,7 @@ module controlUnit(
     
     // stage enable signals ( used as clock for each stage )
     output reg en_execute = LOW,
-                en_instruction_fetch = HIGH,
+                en_instruction_fetch = LOW,
                 en_instruction_decode = LOW;
 
     // ----------------- INTERNALS -----------------
@@ -73,17 +73,13 @@ module controlUnit(
     `define STG_EXEC 3'b010
     `define STG_MEM 3'b011
     `define STG_WRB 3'b100
+    `define STG_INIT 3'b101
+    
 
-    reg [2:0] current_stage = `STG_FTCH;
-    reg [2:0] next_stage = `STG_DCDE;
+    reg [2:0] current_stage = `STG_INIT;
+    reg [2:0] next_stage = `STG_FTCH;
 
     // ----------------- LOGIC -----------------
-
-    // ! // TODO write psuedo code 
-
-    initial begin
-
-    end
 
     always@(posedge clock) begin // maybe use negative edge
 
@@ -94,6 +90,11 @@ module controlUnit(
     always@(posedge clock) begin // maybe use negative edge
 
         case (current_stage)
+
+            `STG_INIT: begin                                    
+                en_instruction_fetch = LOW; // fetch after finding PC src
+                next_stage <= `STG_FTCH;
+            end
 
             `STG_FTCH: begin 
                 // disable previous stage
@@ -106,7 +107,7 @@ module controlUnit(
                 sig_enable_data_memory_read = LOW; 
 
                 // enable current stage
-                en_instruction_fetch <= HIGH; // fetch after finding PC src
+                en_instruction_fetch = HIGH; // fetch after finding PC src
 
                 // next stage
                 next_stage <= `STG_DCDE;
