@@ -128,3 +128,20 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 - waveform
   ![addition loop waveform](./assets/programs/addition_loop.png)
+
+## Shifts Program
+
+- code:
+
+  ```assembly
+  ADDI R1, R0, 'b1000
+  ADDI R2, R0, 'b1110
+  AND R3, R2, R1 ; R3 = 1000 & 1110 = 1000
+  ADDI R4, R0, 'd2
+  SLR R5, R3, 'd3 ; R5 = 1000 >> 3 = 0001
+  SLLV R6, R3, R4 ; R6 = 1000 << 2 = 0010 0000
+  J -4 ; jumps to previous ADD
+  ```
+
+- waveform
+  ![shifts waveform](./assets/programs/shifts.png)
