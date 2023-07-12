@@ -76,16 +76,13 @@ module riscProcessor();
     assign InstructionType = InstructionReg[29:30];
     assign StopBit = InstructionReg[31];
 
-    // signed extender for S-Type instructions immediate ( 5 bit to 32 )
-    assign Sign_Extended_SA = { {27{SA[0]}}, SA };
-
 
     // ----------------- PC Modules -----------------
 
     // register file wires/registers
     reg [31:0] ReturnAddress;  // input to PC Module from TODO
     wire signed [31:0] Sign_Extended_J_TypeImmediate, Sign_Extended_I_TypeImmediate;  // input to PC Module from decode stage
-    wire [31:0] Unsigned_Extended_I_TypeImmediate; // input to ALU Module from decode stage
+    wire [31:0] Unsigned_Extended_I_TypeImmediate, Unsigned_Extended_SA; // input to ALU Module from decode stage
 
     // signed extender for J-Type instructions immediate ( 24 bit to 32 )
     assign Sign_Extended_J_TypeImmediate = { {8{J_TypeImmediate[0]}}, J_TypeImmediate };
@@ -95,6 +92,9 @@ module riscProcessor();
 
     // unsigned extender for I-Type instructions immediate ( 14 bit to 32 )
     assign Unsigned_Extended_I_TypeImmediate = { {18{1'b0}}, I_TypeImmediate };
+
+    // unsigned extender for S-Type instructions immediate ( 5 bit to 32 )
+    assign Unsigned_Extended_SA = { {27{1'b0}}, SA };
 																				
     // ----------------- Register File -----------------
     
@@ -118,7 +118,7 @@ module riscProcessor();
 
     always @(posedge en_execute) begin
         case (sig_alu_src)
-            ALU_Src_SAi: ALU_B <= Sign_Extended_SA;
+            ALU_Src_SAi: ALU_B <= Unsigned_Extended_SA;
             ALU_Src_Reg: ALU_B <= BusB;
             ALU_Src_SIm: ALU_B <= Sign_Extended_I_TypeImmediate;
             ALU_Src_UIm: ALU_B <= Unsigned_Extended_I_TypeImmediate;

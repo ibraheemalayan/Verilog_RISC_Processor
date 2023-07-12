@@ -51,24 +51,51 @@ module instructionMemory(clock, AddressBus, InstructionReg);
 
         // initial
         instruction_memory[0] = 32'b0;
+
+
+        // ----------------- Addition Loop Program -----------------
         
-        // R1 = 2
-        instruction_memory[1] = { ADDI, R0, R1, 14'd2, I_Type, 1'b0 };
+        // // R1 = 2
+        // instruction_memory[1] = { ADDI, R0, R1, 14'd2, I_Type, 1'b0 };
 
-         // R2 = 3
-        instruction_memory[2] = { ADDI, R0, R2, 14'd3, I_Type, 1'b0 };
+        //  // R2 = 3
+        // instruction_memory[2] = { ADDI, R0, R2, 14'd3, I_Type, 1'b0 };
 
-        // R3 = R1 + R2
-        instruction_memory[3] = { ADD, R1, R3, R2, 9'd0, R_Type, 1'b0 };
+        // // R3 = R1 + R2
+        // instruction_memory[3] = { ADD, R1, R3, R2, 9'd0, R_Type, 1'b0 };
 
-        // R3 = R3 + R3
-        instruction_memory[4] = { ADD, R3, R3, R3, 9'd0, R_Type, 1'b0 };
+        // // R3 = R3 + R3
+        // instruction_memory[4] = { ADD, R3, R3, R3, 9'd0, R_Type, 1'b0 };
 
-        // Jump -4; jump to instruction_memory[3]
-        instruction_memory[5] = { J, -24'sd4, J_Type, 1'b0 };
+        // // Jump -4; jump to instruction_memory[3]
+        // instruction_memory[5] = { J, -24'sd4, J_Type, 1'b0 };
 
-        // SUB R3, R1, R2; subtract R1 and R2 and store in R3
-        instruction_memory[6] = { SUB, R1, R3, R2, 9'd0, R_Type, 1'b0 };
+        // // SUB R3, R1, R2; subtract R1 and R2 and store in R3
+        // instruction_memory[6] = { SUB, R1, R3, R2, 9'd0, R_Type, 1'b0 };
+
+
+        // ----------------- Shift Loop Program -----------------
+
+        // R1 = 1000
+        instruction_memory[1] = { ADDI, R0, R1, 14'b1000, I_Type, 1'b0 };
+
+        // R2 = 1110
+        instruction_memory[2] = { ADDI, R0, R2, 14'b1110, I_Type, 1'b0 };
+
+        // R3 = R1 & R2 = 'b1000 = 'd8
+        instruction_memory[3] = { AND, R1, R3, R2, 9'd0, R_Type, 1'b0 };
+
+        // R4 = 2
+        instruction_memory[4] = { ADDI, R0, R4, 14'd2, I_Type, 1'b0 };
+
+        // R5 = R3 >> 3 = 'b0001 = 'd1
+        instruction_memory[5] = { SLR, R3, R5, 5'd0, 5'd3, 4'd0, S_Type, 1'b0 };
+
+        // R6 = R3 << R4 = 'b100000 = 'd32
+        instruction_memory[6] = { SLLV, R3, R6, R4, 5'd0, 4'd3, S_Type, 1'b0 };
+
+        // Jump -4; jump to instruction_memory[5]
+        instruction_memory[7] = { J, -24'sd4, J_Type, 1'b0 };
 
         
 
