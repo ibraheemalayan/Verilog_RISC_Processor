@@ -145,3 +145,20 @@ A Simple multi-cycle RISC Verilog processor with architecture similar to MIPS
 
 - waveform
   ![shifts waveform](./assets/programs/shifts.png)
+
+## Branches Program
+
+- code:
+
+  ```assembly
+  ADDI R1, R0, 'b1000
+  ADDI R2, R0, 'b1110
+  BEQ R1, R2, 8; not taken (R1 != R2) so R1 becomes 1110
+  ADDI R1, R0, 'b1110
+  BEQ R1, R2, 8; taken (R1 == R2)
+  ADDI R4, R0, 'b1; dead code
+  ADDI R5, R0, 'b2; executed
+  ```
+
+- waveform
+  ![branches waveform](./assets/programs/branch.png)
